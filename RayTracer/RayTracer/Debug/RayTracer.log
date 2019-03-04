@@ -1,0 +1,8 @@
+﻿  main.cpp
+c:\users\neal\desktop\raytracer\raytracer\raytracer\transform.h(18): warning C4305: 'initializing': truncation from 'double' to 'float'
+  RayTracer.cpp
+c:\users\neal\desktop\raytracer\raytracer\raytracer\transform.h(18): warning C4305: 'initializing': truncation from 'double' to 'float'
+  readfile.cpp
+c:\users\neal\desktop\raytracer\raytracer\raytracer\readfile.cpp(79): warning C4101: 'i': unreferenced local variable
+  Generating Code...
+  RayTracer.vcxproj -> C:\Users\Neal\Desktop\RayTracer\RayTracer\Debug\RayTracer.exe

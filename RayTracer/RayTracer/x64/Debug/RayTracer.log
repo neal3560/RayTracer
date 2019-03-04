@@ -1,2 +1,1 @@
-﻿  main.cpp
-  RayTracer.vcxproj -> C:\Users\Neal\Desktop\RayTracer\RayTracer\x64\Debug\RayTracer.exe
+﻿x64\Debug\main.obj : fatal error LNK1112: module machine type 'x64' conflicts with target machine type 'x86'
