@@ -36,8 +36,9 @@ void Transform::up(float degrees, vec3& eye, vec3& up)
 
 mat4 Transform::lookAt(const vec3 &eye, const vec3 &center, const vec3 &up)
 {
-	vec3 w = normalize(eye);
-	vec3 u = normalize(cross(up, eye));
+	vec3 a = eye - center;
+	vec3 w = normalize(a);
+	vec3 u = normalize(cross(up, a));
 	vec3 v = cross(w, u);
 	mat3 R = transpose(mat3(u, v, w));
 	mat4 R2 = mat4(R);

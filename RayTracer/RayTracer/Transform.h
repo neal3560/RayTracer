@@ -17,6 +17,8 @@ typedef glm::vec3 vec3;
 typedef glm::vec4 vec4;
 const float pi = 3.14159265;
 
+using namespace std;
+
 // glm provides vector, matrix classes like glsl
 // Typedefs to make code more readable 
 

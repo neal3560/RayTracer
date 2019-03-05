@@ -1,0 +1,44 @@
+# Test Scene 2
+# A simple scene to test ray-surface intersections
+# This defines a simple dice
+# There are no transformations in this scene
+
+# Note that I use ambient to set the color of the various materials.
+# It is unlikely that a ray tracing program will be able to do the same or
+# indeed to interpret multiple instances of the ambient keyword.
+# To get the same effect, you can assign manually a color to each group of
+# primitives.  In any case, getting the geometry right is the point of this
+# exercise, not the shading.
+
+size 480 480
+
+# There are 3 camera positions.  Make images for all 3
+
+camera 0 0 -2 0 0 0 1 1 2 60
+#camera +2 +2 2 0 0 0 -1 -1 2 60
+#camera -2 -2 -2 0 0 0 -1 -1 2 60
+
+
+# Now specify the geometry.  First the cube, then the spheres
+
+maxverts 8
+
+vertex -1 -1 -1
+vertex +1 -1 -1
+vertex +1 +1 -1
+vertex -1 +1 -1
+vertex -1 -1 +1
+vertex +1 -1 +1
+vertex +1 +1 +1
+vertex -1 +1 +1
+
+# Now, I actually define the cube.  Note that to avoid lighting/material
+# calculations, I am just using ambient to define the colors.
+# No lighting calculations should be performed since I haven't defined any
+# lights.
+
+
+# Make spheres
+ambient 1 1 1
+
+sphere 0 0 0 0.5
