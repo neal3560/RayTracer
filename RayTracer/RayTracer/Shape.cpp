@@ -19,17 +19,17 @@ Shape::~Shape(){
 
 }
 
-double Shape::intersect(vec3 eye, vec3 ray){
+float Shape::intersect(vec3 eye, vec3 ray){
 	vec3 eye_in = vec3(inverse(transform) * vec4(eye, 1));
 	vec3 ray_in = vec3(inverse(transform) * vec4(ray, 0));
 	if (type == 0) {
-		double a = dot(ray_in, ray_in);
-		double b = 2 * dot(ray_in, eye_in - first);
-		double c = dot(eye_in - first, eye_in - first) - radius * radius;
-		double delta = b * b - 4 * a * c;
+		float a = dot(ray_in, ray_in);
+		float b = 2 * dot(ray_in, eye_in - first);
+		float c = dot(eye_in - first, eye_in - first) - radius * radius;
+		float delta = b * b - 4 * a * c;
 		if (delta > 0) {
-			double r1 = (-b + sqrt(delta)) / (2 * a);
-			double r2 = (-b - sqrt(delta)) / (2 * a);
+			float r1 = (-b + sqrt(delta)) / (2 * a);
+			float r2 = (-b - sqrt(delta)) / (2 * a);
 			if(r1 > 0 && r2 > 0)
 				return min(r1, r2);
 			else if (r1 > 0 && r2 < 0) {
@@ -75,4 +75,24 @@ double Shape::intersect(vec3 eye, vec3 ray){
 			return -1;
 		}
  	}
+}
+
+void Shape::getInfo(float t, vec3 origin, vec3 ray, vec3 & posn, vec3 & normal) {
+	vec3 eye_in = vec3(inverse(transform) * vec4(origin, 1));
+	vec3 ray_in = vec3(inverse(transform) * vec4(ray, 0));
+
+	vec4 hit = vec4(eye_in + t * ray_in, 1);
+	posn = vec3(transform * hit);
+
+	vec3 norm;
+	if (type == 0) {
+		norm = normalize(vec3(hit) - first);
+	}
+	else {
+		norm = normalize(cross(third - first, second - first));
+		if (dot(ray_in, norm) > 0) {
+			norm = -1.0f * norm;
+		}
+	}
+	normal = normalize(mat3(transpose(inverse(transform))) * norm);
 }

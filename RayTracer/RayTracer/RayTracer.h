@@ -22,12 +22,21 @@ class RayTracer{
 		bool readvals(stringstream &s, const int numvals, float * values);
 		void readfile(const char * filename);
 		vec3 getRay(int i, int j);
+		Shape * intersect(vec3 origin, vec3 ray, vec3 &posn, vec3 &normal);
+		vec3 getColor(vec3 ray, vec3 posn, vec3 normal, Shape * Obj, int depth);
+		vec3 ComputeLight(const vec3 direction, const vec3 lightcolor, const vec3 normal,
+			const vec3 halfvec, const vec3 mydiffuse, const vec3 myspecular,
+			const float myshininess);
 
 		int w, h;
 		vec3 eye;
 		vec3 up;
 		vec3 center;
 		float fovy;
+
+		vec3 attenuation;
+		vector<vec3> *lightcolor;
+		vector<vec4> *lightposn;
 
 		float ambient[3];
 		float diffuse[3];
@@ -39,33 +48,10 @@ class RayTracer{
 		vector<Shape*> * objects;
 		mat4 modelview;
 
+		int maxdepth;
+
+		//char* output;
 };
-
-
-
-
-
-/*
-// Lighting parameter array, similar to that in the fragment shader
-const int numLights = 10;
-EXTERN GLfloat lightposn[4 * numLights]; // Light Positions
-EXTERN GLfloat lightcolor[4 * numLights]; // Light Colors
-EXTERN GLfloat lightransf[4 * numLights]; // Lights transformed by modelview
-EXTERN int numused;                     // How many lights are used 
-
-
-
-
-// Variables to set uniform params for lighting fragment shader 
-EXTERN GLuint lightcol;
-EXTERN GLuint lightpos;
-EXTERN GLuint numusedcol;
-EXTERN GLuint enablelighting;
-EXTERN GLuint ambientcol;
-EXTERN GLuint diffusecol;
-EXTERN GLuint specularcol;
-EXTERN GLuint emissioncol;
-EXTERN GLuint shininesscol;*/
 
 #endif
 

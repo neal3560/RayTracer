@@ -12,17 +12,19 @@ public:
 	Shape(int type, vec3 first, vec3 second, vec3 third);
 	Shape(int type, vec3 center, float radius);
 	~Shape();
-	double intersect(vec3 eye, vec3 ray);
+	float intersect(vec3 eye, vec3 ray);
+	void getInfo(float t, vec3 origin, vec3 ray, vec3 & posn, vec3 & normal);
+
 
 	int type;
 	vec3 first;
 	vec3 second;
 	vec3 third;
 	float radius;
-	float ambient[3];
-	float diffuse[3];
-	float specular[3];
-	float emission[3];
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+	vec3 emission;
 	float shininess;
 	mat4 transform;
 };

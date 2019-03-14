@@ -54,33 +54,31 @@ void RayTracer::readfile(const char* filename)
 
 				// Process the light, add it to database.
 				// Lighting Command
-				/*if (cmd == "light") {
-					if (numused == numLights) { // No more Lights 
-						cerr << "Reached Maximum Number of Lights " << numused << " Will ignore further lights\n";
+				if (cmd == "point") {
+					validinput = readvals(s, 6, values); // Position/color for lts.
+					if (validinput) {
+						vec4 posn = vec4(values[0], values[1], values[2], 1);
+						vec3 color = vec3(values[3], values[4], values[5]);
+						lightposn->push_back(posn);
+						lightcolor->push_back(color);
 					}
-					else {
-						validinput = readvals(s, 8, values); // Position/color for lts.
-						if (validinput) {
-							lightposn[numused * 4] = values[0];
-							lightposn[numused * 4 + 1] = values[1];
-							lightposn[numused * 4 + 2] = values[2];
-							lightposn[numused * 4 + 3] = values[3];
-							lightcolor[numused * 4] = values[4];
-							lightcolor[numused * 4 + 1] = values[5];
-							lightcolor[numused * 4 + 2] = values[6];
-							lightcolor[numused * 4 + 3] = values[7];
-							++numused;
-						}
+				}
+				else if (cmd == "directional") {
+					validinput = readvals(s, 6, values); // Position/color for lts.
+					if (validinput) {
+						vec4 posn = vec4(values[0], values[1], values[2], 0);
+						vec3 color = vec3(values[3], values[4], values[5]);
+						lightposn->push_back(posn);
+						lightcolor->push_back(color);
 					}
-				}*/
+				}
 
 				// Material Commands 
 				// Ambient, diffuse, specular, shininess properties for each object.
 				// Filling this in is pretty straightforward, so I've left it in 
 				// the skeleton, also as a hint of how to do the more complex ones.
 				// Note that no transforms/stacks are applied to the colors. 
-
-				if (cmd == "ambient") {
+				else if (cmd == "ambient") {
 					validinput = readvals(s, 3, values); // colors 
 					if (validinput) {
 						for (i = 0; i < 3; i++) {
@@ -149,12 +147,10 @@ void RayTracer::readfile(const char* filename)
 						sphere->transform = transfstack.top();
 
 						// Set the object's light properties
-						for (i = 0; i < 4; i++) {
-							(sphere->ambient)[i] = ambient[i];
-							(sphere->diffuse)[i] = diffuse[i];
-							(sphere->specular)[i] = specular[i];
-							(sphere->emission)[i] = emission[i];
-						}
+						sphere->ambient = vec3(ambient[0], ambient[1], ambient[2]);
+						sphere->diffuse = vec3(diffuse[0], diffuse[1], diffuse[2]);
+						sphere->specular = vec3(specular[0], specular[1], specular[2]);
+						sphere->emission = vec3(emission[0], emission[1], emission[2]);
 						sphere->shininess = shininess;
 
 						objects->push_back(sphere);
@@ -175,12 +171,10 @@ void RayTracer::readfile(const char* filename)
 						tri->transform = transfstack.top();
 
 						// Set the object's light properties
-						for (i = 0; i < 4; i++) {
-							(tri->ambient)[i] = ambient[i];
-							(tri->diffuse)[i] = diffuse[i];
-							(tri->specular)[i] = specular[i];
-							(tri->emission)[i] = emission[i];
-						}
+						tri->ambient = vec3(ambient[0], ambient[1], ambient[2]);
+						tri->diffuse = vec3(diffuse[0], diffuse[1], diffuse[2]);
+						tri->specular = vec3(specular[0], specular[1], specular[2]);
+						tri->emission = vec3(emission[0], emission[1], emission[2]);
 						tri->shininess = shininess;
 
 						objects->push_back(tri);
@@ -221,7 +215,10 @@ void RayTracer::readfile(const char* filename)
 						transfstack.pop();
 					}
 				}
-
+				else if (cmd == "maxdepth") {
+					validinput = readvals(s, 1, values);
+					maxdepth = (int)values[0];
+				}
 				else {
 					cerr << "Unknown Command: " << cmd << " Skipping \n";
 				}
