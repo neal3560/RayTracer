@@ -54,7 +54,11 @@ void RayTracer::readfile(const char* filename)
 
 				// Process the light, add it to database.
 				// Lighting Command
-				if (cmd == "point") {
+				if (cmd == "attenuation") {
+					validinput = readvals(s, 3, values);
+					attenuation = vec3(values[0], values[1], values[2]);
+				}
+				else if (cmd == "point") {
 					validinput = readvals(s, 6, values); // Position/color for lts.
 					if (validinput) {
 						vec4 posn = vec4(values[0], values[1], values[2], 1);

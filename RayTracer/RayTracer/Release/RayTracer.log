@@ -1,8 +1,10 @@
-﻿  RayTracer.cpp
-c:\users\neal\desktop\raytracer\raytracer\raytracer\raytracer.cpp(55): warning C4018: '<': signed/unsigned mismatch
+﻿  main.cpp
+c1xx : warning C4199: two-phase name lookup is not supported for C++/CLI, C++/CX, or OpenMP; use /Zc:twoPhase-
+c:\users\neal\desktop\raytracer\raytracer\raytracer\main.cpp(13): warning C4005: 'INFINITY': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\corecrt_math.h(90): note: see previous definition of 'INFINITY'
   Generating code
-  2 of 610 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
+  2 of 612 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    5 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   RayTracer.vcxproj -> C:\Users\Neal\Desktop\RayTracer\RayTracer\Release\RayTracer.exe

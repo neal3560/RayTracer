@@ -18,6 +18,7 @@ int main(int argc, char* argv[]) {
 	int pix = target->w * target->h;
 	BYTE *pixels = new BYTE[3 * pix];
 	
+#pragma omp parallel for
 	for (int i = 0; i < target->h; i++) {
 		for (int j = 0; j < target->w; j++) {
 			//cout << "in forloop\n";
@@ -33,7 +34,7 @@ int main(int argc, char* argv[]) {
 				pixels[start + 2] =(int)(color[0] * 255);
  			}
 		}
-		cout << "complete " << (float)i / target->h << "\n";
+		cout << "computing...\n";
 	}
 	
 	FreeImage_Initialise();

@@ -61,7 +61,7 @@ vec3 RayTracer::getColor(vec3 ray, vec3 posn, vec3 normal, Shape * Obj, int dept
 			light_ray = normalize(light_posn);
 			Shape * hit = intersect(posn + 0.01f * light_ray, light_ray, hitposn, hitnormal);
 			if (hit) {
-				break;
+				continue;
 			}
 			else {
 				vec3 H = normalize(eye_dirt + light_ray);
@@ -72,9 +72,8 @@ vec3 RayTracer::getColor(vec3 ray, vec3 posn, vec3 normal, Shape * Obj, int dept
 		else {
 			light_ray = normalize(light_posn - posn);
 			Shape * hit = intersect(posn + 0.01f * light_ray, light_ray, hitposn, hitnormal);
-			if (hit) {
-				if (length(light_posn - posn) > length(hitposn - posn))
-					break;
+			if (hit && length(light_posn - posn) > length(hitposn - posn)) {
+				continue;
 			}
 			else {
 				vec3 H = normalize(eye_dirt + light_ray);
