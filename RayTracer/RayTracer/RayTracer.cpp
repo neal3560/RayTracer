@@ -1,7 +1,14 @@
 # include "RayTracer.h"
-# include <algorithm>
+# define INFI 100000
 RayTracer::RayTracer(char* filename)
 {
+	min_x = INFI;
+	max_x = -INFI;
+	min_y = INFI;
+	max_y = -INFI;
+	min_z = INFI;
+	max_z = -INFI;
+	//grids = new unordered_map<tuple<int, int, int>, vector<Shape*>*, key_hash>();
 	vertexList = new vector<vec3>();
 	objects = new vector<Shape*>();
 	lightcolor = new vector<vec3>();
@@ -9,6 +16,24 @@ RayTracer::RayTracer(char* filename)
 	attenuation = vec3(1, 0, 0);
 	//output = new char();
 	readfile(filename);
+
+	for (int x = floor(min_x); x <= floor(max_x); x++) {
+		for (int y = floor(min_y); y <= floor(max_y); y++) {
+			for (int z = floor(min_z); z <= floor(max_z); z++) {
+				grids[make_tuple(x, y, z)] = vector<Shape*>();
+			}
+		}
+	}
+
+	for (vector<Shape*>::iterator p = objects->begin(); p != objects->end(); p++) {
+		for (int x = floor((*p)->min_x); x <= floor((*p)->max_x); x++) {
+			for (int y = floor((*p)->min_y); y <= floor((*p)->max_y); y++) {
+				for (int z = floor((*p)->min_z); z <= floor((*p)->max_z); z++) {
+					grids.at(make_tuple(x, y, z)).push_back(*p);
+				}
+			}
+		}
+	}
 }
 
 RayTracer::~RayTracer()
@@ -33,19 +58,80 @@ vec3 RayTracer::getRay(int i, int j) {
 }
 
 Shape * RayTracer::intersect(vec3 origin, vec3 ray, vec3 & posn, vec3 & normal) {
+	// current grid
+	int cur_x = (int)floor(origin.x);
+	int cur_y = (int)floor(origin.y);
+	int cur_z = (int)floor(origin.z);
+
+	// intersection point
+	float inter_x = origin.x;
+	float inter_y = origin.y;
+	float inter_z = origin.z;
+
+	// sign of direction
+	int sx = ray.x > 0 ? 1 : (ray.x < 0 ? -1 : 0);
+	int sy = ray.y > 0 ? 1 : (ray.y < 0 ? -1 : 0);
+	int sz = ray.z > 0 ? 1 : (ray.z < 0 ? -1 : 0);
+	//cout << sx << " " << sy << " " << sz << "\n";
 	float min_t = INFINITY;
 	Shape * min_primitive = NULL;
-	for (vector<Shape*>::iterator p = objects->begin(); p != objects->end(); p++) {
-		float t = (*p)->intersect(origin, ray);
-		if (t > 0 && t < min_t) {
-			min_primitive = *p;
-			min_t = t;
+
+	while (cur_x >= (int)floor(min_x) && cur_x <= (int)floor(max_x)
+		&& cur_y >= (int)floor(min_y) && cur_y <= (int)floor(max_y)
+		&& cur_z >= (int)floor(min_z) && cur_z <= (int)floor(max_z))
+	{
+		//cout << "tuple: " << cur_x << cur_y << cur_z << "\n";
+		vector<Shape*> shapeList = grids[make_tuple(cur_x, cur_y, cur_z)];
+		if (shapeList.size() > 0) {
+			for (vector<Shape*>::iterator p = shapeList.begin(); p != shapeList.end(); p++) {
+				float t = (*p)->intersect(origin, ray);
+				if (t > 0 && t < min_t) {
+					min_primitive = *p;
+					min_t = t;
+				}
+			}
+			/*if (min_primitive) {
+				min_primitive->getInfo(min_t, origin, ray, posn, normal);
+				return min_primitive;
+			}*/
+		}
+		// distance 
+		float dx = sx > 0 ? (cur_x + 1 - inter_x) : (inter_x - cur_x);
+		float dy = sy > 0 ? (cur_y + 1 - inter_y) : (inter_y - cur_y);
+		float dz = sz > 0 ? (cur_z + 1 - inter_z) : (inter_z - cur_z);
+		// time
+		float tx = ray.x != 0 ? (dx / abs(ray.x)) : -1;
+		float ty = ray.y != 0 ? (dy / abs(ray.y)) : -1;
+		float tz = ray.z != 0 ? (dz / abs(ray.z)) : -1;
+
+		//cout << "time: " << tx << ty << tz << "\n";
+
+		if (tx >= 0 && (tx <= ty || ty < 0) && (tx <= tz || tz < 0)) {
+			cur_x += sx;
+			inter_x += tx * ray.x;
+			inter_y += tx * ray.y;
+			inter_z += tx * ray.z;
+		}
+		else if(ty >= 0 && (ty <= tx || tx < 0) && (ty <= tz || tz < 0)){
+			cur_y += sy;
+			inter_x += ty * ray.x;
+			inter_y += ty * ray.y;
+			inter_z += ty * ray.z;
+		}
+		else if (tz >= 0 && (tz <= tx || tx < 0) && (tz <= ty || ty < 0)) {
+			cur_z += sz;
+			inter_x += tz * ray.x;
+			inter_y += tz * ray.y;
+			inter_z += tz * ray.z;
 		}
 	}
+
 	if (min_primitive) {
 		min_primitive->getInfo(min_t, origin, ray, posn, normal);
+		return min_primitive;
 	}
-	return min_primitive;
+
+	return NULL;
 }
 
 vec3 RayTracer::getColor(vec3 ray, vec3 posn, vec3 normal, Shape * Obj, int depth) {

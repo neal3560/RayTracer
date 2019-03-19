@@ -1,5 +1,8 @@
 #ifndef RAYTRACER_H
 #define RAYTRACER_H
+#include <algorithm>
+#include <tuple>
+#include <unordered_map> 
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -50,7 +53,22 @@ class RayTracer{
 
 		int maxdepth;
 
-		//char* output;
+		float min_x;
+		float max_x;
+		float min_y;
+		float max_y;
+		float min_z;
+		float max_z;
+
+		typedef std::tuple<int, int, int> grid;
+		struct key_hash : public unary_function<grid, size_t> 
+		{
+			std::size_t operator() (const grid &k) const
+			{
+				return hash<float>()(get<0>(k)) ^ hash<float>()(get<1>(k)) ^ hash<float>()(get<2>(k));
+			}
+		};
+		unordered_map<tuple<int, int, int>, vector<Shape*>, key_hash> grids;
 };
 
 #endif

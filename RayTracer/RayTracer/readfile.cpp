@@ -134,6 +134,14 @@ void RayTracer::readfile(const char* filename)
 						center = vec3(values[3], values[4], values[5]);
 						up = normalize(vec3(values[6], values[7], values[8]));
 						fovy = values[9];
+
+						max_x = std::max(values[0], max_x);
+						max_y = std::max(values[1], max_y);
+						max_z = std::max(values[2], max_z);
+
+						min_x = std::min(values[0], min_x);
+						min_y = std::min(values[1], min_y);
+						min_z = std::min(values[2], min_z);
 					}
 				}
 				else if (cmd == "vertex") {
@@ -158,7 +166,23 @@ void RayTracer::readfile(const char* filename)
 						sphere->shininess = shininess;
 
 						objects->push_back(sphere);
-						
+
+						sphere->max_x = (sphere->transform * vec4(sphere->first + vec3(sphere->radius, 0, 0), 1)).x;
+						sphere->min_x = (sphere->transform * vec4(sphere->first - vec3(sphere->radius, 0, 0), 1)).x;
+
+						sphere->max_y = (sphere->transform * vec4(sphere->first + vec3(0, sphere->radius, 0), 1)).y;
+						sphere->min_y = (sphere->transform * vec4(sphere->first - vec3(0, sphere->radius, 0), 1)).y;
+
+						sphere->max_z = (sphere->transform * vec4(sphere->first + vec3(0, 0, sphere->radius), 1)).z;
+						sphere->min_z = (sphere->transform * vec4(sphere->first - vec3(0, 0, sphere->radius), 1)).z;
+
+						max_x = std::max(sphere->max_x, max_x);
+						max_y = std::max(sphere->max_y, max_y);
+						max_z = std::max(sphere->max_z, max_z);
+
+						min_x = std::min(sphere->min_x, min_x);
+						min_y = std::min(sphere->min_y, min_y);
+						min_z = std::min(sphere->min_z, min_z);
 					}
 				}
 				else if (cmd == "tri") {
@@ -182,6 +206,25 @@ void RayTracer::readfile(const char* filename)
 						tri->shininess = shininess;
 
 						objects->push_back(tri);
+						
+						vec4 first_t = tri->transform * vec4(tri->first, 1);
+						vec4 second_t = tri->transform * vec4(tri->second, 1);
+						vec4 third_t = tri->transform * vec4(tri->third, 1);
+						tri->max_x = std::max({ first_t.x, second_t.x, third_t.x });
+						tri->max_y = std::max({ first_t.y, second_t.y, third_t.y });
+						tri->max_z = std::max({ first_t.z, second_t.z, third_t.z });
+
+						tri->min_x = std::min({ first_t.x, second_t.x, third_t.x });
+						tri->min_y = std::min({ first_t.y, second_t.y, third_t.y });
+						tri->min_z = std::min({ first_t.z, second_t.z, third_t.z });
+
+						max_x = std::max(tri->max_x, max_x);
+						max_y = std::max(tri->max_y, max_y);
+						max_z = std::max(tri->max_z, max_z);
+
+						min_x = std::min(tri->min_x, min_x);
+						min_y = std::min(tri->min_y, min_y);
+						min_z = std::min(tri->min_z, min_z);
 					}
 				}
 				else if (cmd == "translate") {

@@ -53,7 +53,7 @@ tri 0 1 2
 tri 0 2 3
 popTransform
 
-#green
+green
 pushTransform
 translate 0 0 -3
 rotate 0 1 0 -60

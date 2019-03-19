@@ -35,6 +35,6 @@ vertex +1 -1 0
 vertex +1 +1 0
 vertex -1 +1 0
 
-sphere 0 0 0 0.5
-#tri 0 1 2
-#tri 0 2 3
+#sphere 0 0 0 0.5
+tri 0 1 2
+tri 0 2 3
